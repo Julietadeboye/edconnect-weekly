@@ -19,9 +19,13 @@ class User {
 
 class Users extends DataModel {
     authenticate(email, password) {
-        let authen = this.data.find((key) => key.email == email && key.password == password) 
-             return authen? true : false
-       }
+        let user  = this.getByEmail(email)
+        if (user.password == password){
+            return true;
+        }
+        return false;
+    }
+
 
     getByEmail(email) {
         for (let i=0; i< this.data.length; i++){
@@ -45,33 +49,25 @@ class Users extends DataModel {
     validate(obj) {
         this.errors = [];
         let errormsg;
-        let emptyTest,emailTest,matricTest,passwordTest = false;
 
         //empty property validation
-        for (const key in Object.keys(obj)){
-            if (obj[key] = ''){
-                emptyTest = true;
+      for (const key in obj){
+            if (obj[key] === '' || obj[key] === undefined || obj[key] === null){
                 errormsg = `${key} should not be empty.`;
                 this.errors.push(errormsg)
-                
             }
         }
 
         //same email address validation
-        for (let i =0; i<this.data.length; i++){
-            let valEmail= this.data[i];
-            if (valEmail.email === obj.email){
-                emailTest = true;
-                errormsg = `A user with ${obj.email} already exists.`;
-                this.errors.push(errormsg);
+        let valEmail = this.data.find(item => item.email === obj.email)
+            if (valEmail){
+            this.errors.push("A user with this email already exists.")
             }
-        }
 
          //same matric number validation
          for (let i =0; i<this.data.length; i++){
             let valMatric= this.data[i];
             if (valMatric.matricNumber === obj.matricNumber){
-                matricTest = true;
                 errormsg = `A user with ${obj.matricNumber} already exists.`;
                 this.errors.push(errormsg);
             }
@@ -79,15 +75,16 @@ class Users extends DataModel {
         
          // test for password
         if (obj.password.length < 7) {
-            passwordTest = true;
             errormsg = `Password should be atleast 7 characters`;
             this.errors.push(errormsg)
         }
 
-        if (emptyTest && emailTest && matricTest && passwordTest == true){
-            return false;
-        }
-        return true;
+        
+        if(this.errors.length == 0) {
+            return true;
+        } 
+        return false
+        
     }
 }
 

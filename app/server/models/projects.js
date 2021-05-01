@@ -18,35 +18,28 @@ class Projects extends DataModel {
         let errormsg;
 
         //authors property validation
+         let arrayAuthors = Array.isArray(obj.authors)
+            if (!arrayAuthors){
+                 this.errors.push("Authors should be an array")
+            }
+
+        //tag property validation
+        let arrayTags = Array.isArray(obj.tags)
+            if (!arrayTags){
+                this.errors.push("Tags should be an array")
+            }
+
         for (const key in obj){
-            if (obj.authors !==Array.isArray(obj[key])){
-                errormsg = `${key} should be an array.`;
-                this.errors.push(errormsg);
-            }
-        }
-
-         //tag property validation
-         for (const key in obj){
-            if (obj.tags !==Array.isArray(obj[key])){
-                errormsg = `${key} should be an array.`;
-                this.errors.push(errormsg);
-            }
-        }
-
-        for (const key in Object.keys(obj)){
-            if (obj[key] = ''){
-                emptyTest = true;
+            if (obj[key] === '' || obj[key] === undefined || obj[key] === null){
                 errormsg = `${key} should not be empty.`;
-                this.errors.push(errormsg)
-                
+                this.errors.push(errormsg)  
             }
         }
     
         if(this.errors.length == 0) {
             return true;
-        } else{
+        } 
         return false
-        }
     }
 
 }
